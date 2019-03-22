@@ -120,3 +120,49 @@ bin/kafka-topics \
       ``bin/kafka-console-producer \
            --broker-list localhost:9092 \
            --topic topic-name < /path/to/your/file/random.txt``
+           
+           
+#### 6. Some other useful commands
+    
+   Get the list of topics
+    
+    ``bin/kafka-topics.sh --list --zookeeper localhost:2181``
+   
+   Get the configuration of a topic
+   
+   ``bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic topic-name``
+   
+   Alter a topic
+   
+   ``bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic topic-name --partitions 16``
+   
+   Delete a topic
+   
+   ``bin/kafka-topics.sh --delete --zookeeper localhost:2181 --topic topic-name``
+   
+   Produce a key-value record
+   
+   ``echo "key1,value1" | bin/kafka-console-producer.sh --broker-list localhost:9092 --property parse.key=true --property key.separator=, --topic topic-name``
+   
+   Consume messages and print key + value
+   
+   ``bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic-name --property print.key=true --property key.separator="," --from-beginning``
+   
+   Count messages in a topic 
+   
+   ``bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic topic-name --time -1 |awk -F  ":" '{sum += $3} END {print sum}'``
+   
+   List consumer groups
+   
+   ``bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list``
+   
+   Describe a consumer group (View the lag)
+   
+   ``bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group groupid``
+   
+   Reset offsets in a consumer group
+   
+   ``bin/kafka-consumer-group.sh --bootstrap-server localhost:9092 --group groupid --topic topic-name --reset-offsets --to-latest``
+   
+   ``bin/kafka-consumer-group.sh --bootstrap-server localhost:9092 --group groupid --topic topic-name --reset-offsets --to-latest --execute``
+   
