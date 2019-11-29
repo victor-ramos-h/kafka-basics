@@ -21,39 +21,27 @@ Kafka Basics
 
    ``bin/zookeeper-server-stop.sh``
 
-##### Docker alternatives
+##### Or using docker
 
-- mojix/kafka:v2.1.0
-- wurstmeister/kafka
+- docker-compose.yml and .env files are provided in this git.
+
+- Change MY_HOST_IP_OR_DNS value to your IP or DNS in the .env file.
 
 ~~~~
 kafka:
-    image: mojix/kafka:v2.1.0
-    environment:
-      KAFKA_MAX_MEMORY: 6g
-      KAFKA_MIN_MEMORY: 4g
-      KAFKA_PARAM_BROKER_ID: 1
-      KAFKA_PARAM_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_PARAM_LISTENERS: PLAINTEXT://:9092
-      KAFKA_PARAM_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_PARAM_OFFSETS_RETENTION_MINUTES: '10080'
-      KAFKA_PARAM_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_PARAM_LOG_RETENTION_HOURS: 12
-      KAFKA_PARAM_LOG_RETENTION_BYTES: 1073741824
-      ## For KafkaSSL
-      #KAFKA_PARAM_LISTENERS: 'PLAINTEXT://kafka:9092,SSL://kafka:9093'
-      #KAFKA_PARAM_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:9092,SSL://kafka:9093'
-      #KAFKA_PARAM_SSL_KEYSTORE_LOCATION: /certs/kafka.server.keystore.jks
-      #KAFKA_PARAM_SSL_KEYSTORE_PASSWORD: m0j1xInc
-      #KAFKA_PARAM_SSL_KEY_PASSWORD: m0j1xInc
-      #KAFKA_PARAM_SSL_TRUSTSTORE_LOCATION: /certs/kafka.server.truststore.jks
-      #KAFKA_PARAM_SSL_TRUSTSTORE_PASSWORD: m0j1xInc
-      #KAFKA_PARAM_SSL_CLIENT_AUTH: required
-      #KAFKA_PARAM_SECURITY_INTER_BROKER_PROTOCOL: SSL
-    ports:
-        - 9092:9092
-    volumes:
-      - /data/kafka:/data
+      image: wurstmeister/kafka
+      hostname: kafka
+      environment:
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${MY_HOST_IP_OR_DNS}:9094
+        KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+        KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      ports:
+        - 9094:9094
+      volumes:
+        - ./data/test1/kafka:/data
+        - /var/run/docker.sock:/var/run/docker.sock
       
 zookeeper:
     image: zookeeper:3.4.12

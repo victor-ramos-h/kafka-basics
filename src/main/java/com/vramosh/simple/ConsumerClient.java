@@ -19,7 +19,7 @@ public class ConsumerClient implements Runnable{
     
     public void init(){
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092"); // Are you using docker? Use 9094
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "my-consumer");
@@ -29,7 +29,8 @@ public class ConsumerClient implements Runnable{
     }
     
     public void run(){
-        System.out.println("Starting consumer. Thread.name="+Thread.currentThread().getName());
+        String threadId = Thread.currentThread().getName().split("-")[3];
+        System.out.println("Starting consumer" + threadId);
         
         try{
             consumer.subscribe(Arrays.asList("topic-name"));
@@ -38,9 +39,8 @@ public class ConsumerClient implements Runnable{
                 ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
                 for (ConsumerRecord<String, String> record : records) {
                     System.out.println( 
-                            String.format("Thread %s received key=%s value=%s", 
-                                    Thread.currentThread().getName(), 
-                                    record.key(), 
+                            String.format("Consumer %s ---> %s",
+                                    threadId,
                                     record.value())
                     );
                 }

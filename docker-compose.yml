@@ -1,0 +1,26 @@
+version: "2.3"
+
+services:
+
+  kafka:
+    image: wurstmeister/kafka
+    hostname: kafka
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${MY_HOST_IP_OR_DNS}:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    ports:
+    - 9094:9094
+    volumes:
+    - ./data/kafka:/data
+    - /var/run/docker.sock:/var/run/docker.sock
+
+  zookeeper:
+    image: zookeeper:3.4.12
+    ports:
+    - 2181:2181
+    volumes:
+    - /data/data:/data
+    - /data/datalog:/datalog
