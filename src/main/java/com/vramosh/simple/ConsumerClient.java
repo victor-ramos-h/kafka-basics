@@ -34,7 +34,7 @@ public class ConsumerClient implements Runnable{
         
         try{
             consumer.subscribe(Arrays.asList("topic-name"));
-             
+
             while(true){
                 ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
                 for (ConsumerRecord<String, String> record : records) {
